@@ -11,5 +11,7 @@ assignees: ''
 
 **Assignee** : (이름)
 
+예상 소요 시간 : 
+
 #### Job Discription
 > (작업 내용)
