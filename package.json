@@ -6,5 +6,23 @@
     "nodemon": "^2.0.7",
     "sequelize": "^6.5.1",
     "sequelize-cli": "^6.2.0"
-  }
+  },
+  "name": "im26-cookingstates-server",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osunguk/im26-cookingStates-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osunguk/im26-cookingStates-server/issues"
+  },
+  "homepage": "https://github.com/osunguk/im26-cookingStates-server#readme",
+  "description": ""
 }
