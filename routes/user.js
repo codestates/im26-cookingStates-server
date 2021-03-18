@@ -1,34 +1,17 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/user');
 
-// login  // post
-router.post("/login", function (req, res) {
-  res.status(200).send("로그인 성공");
-});
+router.post('/login', controller.login);
 
-// logout  // get
-router.get("/logout", function (req, res) {
-  res.status(200).send("로그아웃 성공");
-});
+router.get('/logout', controller.logout);
 
-// register  // post
-router.post("/register", function (req, res) {
-  res.status(200).send("가입 성공");
-});
+router.post('/register', controller.register);
 
-// :id/info  // get
-router.get("/:id/info", function (req, res) {
-  res.status(200).send("마이페이지 성공");
-});
+router.get('/:id/info', controller.info);
 
-// :id/update  // post
-router.post("/:id/update", function (req, res) {
-  res.status(200).send("회원정보수정 성공");
-});
+router.post('/:id/update', controller.update);
 
-// :id/unregister  // post
-router.post("/:id/unregister", function (req, res) {
-  res.status(200).send("회원탈퇴 성공");
-});
+router.post('/:id/unregister', controller.unregister);
 
 module.exports = router;

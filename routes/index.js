@@ -1,8 +1,7 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/index');
 
-router.get("/", function (req, res, next) {
-  res.status(200).send("연결 : 성공");
-});
+router.get('/', controller.index);
 
 module.exports = router;
