@@ -13,7 +13,7 @@ const options = {
 mongoose
   .connect(URL, options)
   .then(() => {
-    console.log("ok!");
+    // console.log("ok!");
   })
   .catch((e) => {
     console.log("error!!! ", e);
