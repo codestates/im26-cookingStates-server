@@ -32,8 +32,6 @@ app.use('/token', tokenRouter);
 
 let server;
 
-console.log(fs.existsSync('/etc/letsencrypt/live/cookingstates.cf/'));
-
 if (fs.existsSync('/etc/letsencrypt/live/cookingstates.cf/') && fs.existsSync('/etc/letsencrypt/live/cookingstates.cf/')) {
   const privateKey = fs.readFileSync('/etc/letsencrypt/live/cookingstates.cf/privkey.pem', 'utf8');
   const certificate = fs.readFileSync('/etc/letsencrypt/live/cookingstates.cf/cert.pem', 'utf8');
