@@ -1,0 +1,252 @@
+"use strict";
+
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    /**
+     * Add seed commands here.
+     *
+     * Example:
+     * await queryInterface.bulkInsert('People', [{
+     *   name: 'John Doe',
+     *   isBetaMember: false
+     * }], {});
+     */
+    return await queryInterface.bulkInsert("Recipes", [
+      {
+        id: 1,
+        courseId: 1,
+        difficulty: 1,
+        foodTitle: "두부달걀덮밥",
+        SEQ: 231,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 2,
+        courseId: 1,
+        difficulty: 2,
+        foodTitle: "퓨전떡갈비",
+        SEQ: 2992,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 3,
+        courseId: 1,
+        difficulty: 3,
+        foodTitle: "해물순두부된장찌개",
+        SEQ: 295,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 4,
+        courseId: 1,
+        difficulty: 4,
+        foodTitle: "단호박과 새콤달콤 과일 갈비찜",
+        SEQ: 46,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 5,
+        courseId: 1,
+        difficulty: 5,
+        foodTitle: "방울토마토를 곁들인 너비아니구이와 쌈밥",
+        SEQ: 596,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 6,
+        courseId: 2,
+        difficulty: 1,
+        foodTitle: "미니버거",
+        SEQ: 916,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 7,
+        courseId: 2,
+        difficulty: 2,
+        foodTitle: "안심스테이크",
+        SEQ: 372,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 8,
+        courseId: 2,
+        difficulty: 3,
+        foodTitle: "까르보나라뇨끼",
+        SEQ: 396,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 9,
+        courseId: 2,
+        difficulty: 4,
+        foodTitle: "해산물을 곁들인 매콤한 토마토 스튜",
+        SEQ: 1048,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 10,
+        courseId: 2,
+        difficulty: 5,
+        foodTitle: "버섯과 두부 비프웰링턴",
+        SEQ: 599,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 11,
+        courseId: 3,
+        difficulty: 1,
+        foodTitle: "건강그린 샐러드와 고소한 두유드레싱",
+        SEQ: 82,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 12,
+        courseId: 3,
+        difficulty: 2,
+        foodTitle: "채소 자장면",
+        SEQ: 110,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 13,
+        courseId: 3,
+        difficulty: 3,
+        foodTitle: "라따뚜이",
+        SEQ: 625,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 14,
+        courseId: 3,
+        difficulty: 4,
+        foodTitle: "찹쌀버섯탕수와 블루베리 소스",
+        SEQ: 66,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 15,
+        courseId: 3,
+        difficulty: 5,
+        foodTitle: "곤드레도우와 레몬허니 소스 피자",
+        SEQ: 52,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 16,
+        courseId: 4,
+        difficulty: 1,
+        foodTitle: "딸기연두부쉐이크",
+        SEQ: 772,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 17,
+        courseId: 4,
+        difficulty: 2,
+        foodTitle: "키위 팬케이크",
+        SEQ: 104,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 18,
+        courseId: 4,
+        difficulty: 3,
+        foodTitle: "허니레몬 그린티 푸딩",
+        SEQ: 105,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 19,
+        courseId: 4,
+        difficulty: 4,
+        foodTitle: "녹차 크레페",
+        SEQ: 910,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 20,
+        courseId: 4,
+        difficulty: 5,
+        foodTitle: "망고무스케이크와 마카롱",
+        SEQ: 591,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 21,
+        courseId: 5,
+        difficulty: 1,
+        foodTitle: "리코타치즈 카프레제",
+        SEQ: 3237,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 22,
+        courseId: 5,
+        difficulty: 2,
+        foodTitle: "일본식 계란말이",
+        SEQ: 2958,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 23,
+        courseId: 5,
+        difficulty: 4,
+        foodTitle: "간장소스를 곁들인 새우전복찜",
+        SEQ: 643,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 24,
+        courseId: 5,
+        difficulty: 5,
+        foodTitle: "중국식 바비큐 폭립",
+        SEQ: 979,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 25,
+        courseId: 5,
+        difficulty: 3,
+        foodTitle: "삼겹살꼬치구이",
+        SEQ: 394,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     * await queryInterface.bulkDelete('People', null, {});
+     */
+    return queryInterface.bulkDelete("Recipes", null, {});
+  },
+};
