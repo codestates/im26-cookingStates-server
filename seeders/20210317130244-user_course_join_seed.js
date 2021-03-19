@@ -11,7 +11,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    return await queryInterface.bulkInsert("user_course_joins", [
+    return await queryInterface.bulkInsert("User_Course_joins", [
       {
         userId: 1,
         courseId: 1,
@@ -43,6 +43,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    return queryInterface.bulkDelete("user_course_joins", null, {});
+    return queryInterface.bulkDelete("User_Course_joins", null, {});
   },
 };

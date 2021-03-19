@@ -11,7 +11,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    return await queryInterface.bulkInsert("user_recipe_joins", [
+    return await queryInterface.bulkInsert("User_Recipe_joins", [
       {
         userId: 1,
         recipeId: 1,
@@ -127,6 +127,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    return queryInterface.bulkDelete("user_recipe_joins", null, {});
+    return queryInterface.bulkDelete("User_Recipe_joins", null, {});
   },
 };
