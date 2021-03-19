@@ -14,12 +14,6 @@ const tokenRouter = require('./routes/token.js');
 const app = express();
 const port = 4000;
 
-
-app.use("/", indexRouter);
-app.use("/user", userRouter);
-app.use("/recipe", recipeRouter);
-app.use("/course", courseRouter);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -37,9 +31,6 @@ app.use('/user', userRouter);
 app.use('/recipe', recipeRouter);
 app.use('/course', courseRouter);
 app.use('/token', tokenRouter);
-
-
-console.log(fs.existsSync("/etc/letsencrypt/live/cookingstates.cf/"));
 
 if (
   fs.existsSync("/etc/letsencrypt/live/cookingstates.cf/") &&
