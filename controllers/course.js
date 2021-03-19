@@ -1,7 +1,6 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const { Course } = require('../models');
-const { Recipe } = require('../models');
+const { RecipeModel } = require('../db/mongo');
 
 module.exports = {
   info: async (req, res) => {
@@ -23,26 +22,20 @@ module.exports = {
     }
   },
   specificInfo: async (req, res) => {
-    // get // 해당 코스에 대한 정보를 보낸다
-
-    const courseRecipe = await Recipe.findAll({ where: { courseId: req.params.id } });
-    console.log(courseRecipe);
-
-    // 몽고디비 데이터 가져오기
-
-    const result = courseRecipe.map((el) => {
-      const { id, foodTitle, courseId, difficulty, SEQ } = el.dataValues;
-      return {
-        id,
-        title: foodTitle,
-        courseId,
-        difficulty,
-        image: `https://s3.ap-northeast-2.amazonaws.com/image.cookingstates.cf/recipe_${id}.png`, //! 이미지 업로드
-        // way,
-        // type
-      };
+    await RecipeModel.find({ courseId: req.params.id }, (err, recipe) => {
+      const result = recipe.map((el) => {
+        const { id, title, courseId, difficulty, way, type } = el;
+        return {
+          id,
+          title,
+          courseId,
+          difficulty,
+          way,
+          type,
+          image: `https://s3.ap-northeast-2.amazonaws.com/image.cookingstates.cf/recipe_${id}.png`, //! 이미지 업로드
+        };
+      });
+      res.status(200).json(result);
     });
-
-    res.status(200).send('특정 코스 정보 겟');
   },
 };
