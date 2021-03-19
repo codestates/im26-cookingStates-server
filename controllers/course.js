@@ -1,18 +1,41 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
+const { Course } = require('../models');
+const { RecipeModel } = require('../db/mongo');
 
 module.exports = {
-  info: (req, res) => {
-    // get // 모든 코스에 대한 정보를 보낸다
-    res.status(200).send('모든 코스 정보 겟');
+  info: async (req, res) => {
+    const courseInfo = await Course.findAll();
+    const result = courseInfo.map((el) => {
+      const { id, courseName, description } = el.dataValues;
+      return {
+        id,
+        title: courseName,
+        description,
+        image: `https://s3.ap-northeast-2.amazonaws.com/image.cookingstates.cf/course_${id}.png`,
+      };
+    });
+
+    if (courseInfo) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).send('request failed');
+    }
   },
-  specificInfo: (req, res) => {
-    // get // 해당 코스에 대한 정보를 보낸다
-    // 1 : 한식
-    // 2 : 양식
-    // 3 : 비건
-    // 4 : 디저트
-    // 5 : 혼술 안주
-    res.status(200).send('특정 코스 정보 겟');
+  specificInfo: async (req, res) => {
+    await RecipeModel.find({ courseId: req.params.id }, (err, recipe) => {
+      const result = recipe.map((el) => {
+        const { id, title, courseId, difficulty, way, type } = el;
+        return {
+          id,
+          title,
+          courseId,
+          difficulty,
+          way,
+          type,
+          image: `https://s3.ap-northeast-2.amazonaws.com/image.cookingstates.cf/recipe_${id}.png`, //! 이미지 업로드
+        };
+      });
+      res.status(200).json(result);
+    });
   },
 };
