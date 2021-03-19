@@ -32,7 +32,7 @@ module.exports = {
           difficulty,
           way,
           type,
-          image.small 
+          image
         };
       });
       res.status(200).json(result);
