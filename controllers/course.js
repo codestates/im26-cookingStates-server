@@ -24,7 +24,7 @@ module.exports = {
   specificInfo: async (req, res) => {
     await RecipeModel.find({ courseId: req.params.id }, (err, recipe) => {
       const result = recipe.map((el) => {
-        const { id, title, courseId, difficulty, way, type } = el;
+        const { id, title, courseId, difficulty, way, type, image } = el;
         return {
           id,
           title,
@@ -32,7 +32,7 @@ module.exports = {
           difficulty,
           way,
           type,
-          image: `https://s3.ap-northeast-2.amazonaws.com/image.cookingstates.cf/recipe_${id}.png`, //! 이미지 업로드
+          image
         };
       });
       res.status(200).json(result);
