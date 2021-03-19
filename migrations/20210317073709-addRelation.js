@@ -61,7 +61,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeConstraint('User_Recipe_joins', 'user_recipe');
-    await queryInterface.removeConstraint('User_Cecipe_joins', 'recipe_user');
+    await queryInterface.removeConstraint('User_Recipe_joins', 'recipe_user');
     await queryInterface.removeConstraint('User_Course_joins', 'user_course');
     await queryInterface.removeConstraint('User_Course_joins', 'course_user');
     await queryInterface.removeConstraint('Recipes', 'course_recipe');
