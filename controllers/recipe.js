@@ -26,7 +26,7 @@ module.exports = {
     });
   },
   checkedRecipe: (req, res) => {
-    const { recipeId } = req.params;
+    const recipeId = req.params.id;
     if (!req.headers.authorization) {
       res.status(404).send("unauthorized user");
     } else {
@@ -42,12 +42,18 @@ module.exports = {
             if (err) {
               res.status(404).send("invalid access token");
             } else {
-              console.log("decoded : ", decoded);
-              // todo
-              // ?
-              // ?
-              // ?
-              User_Recipe_join.create({});
+              await User_Recipe_join.update(
+                {
+                  checked: true,
+                },
+                {
+                  where: {
+                    userId: decoded.id,
+                    recipeId: recipeId,
+                  },
+                }
+              );
+              res.status(200).send("checked reciped");
             }
           }
         );
