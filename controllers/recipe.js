@@ -16,7 +16,7 @@ module.exports = {
   },
   specificInfo: (req, res) => {
     // 해당 id 값의 레시피에 대한 정보를 보낸다
-    const { recipeId } = req.params;
+    const recipeId = req.params.id;
     RecipeModel.find({ id: recipeId }, (err, result) => {
       if (err) {
         res.status(500);
