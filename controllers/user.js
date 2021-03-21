@@ -1,6 +1,6 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const { User } = require("../models");
 
 module.exports = {
   login: async (req, res) => {
@@ -12,25 +12,29 @@ module.exports = {
 
     if (!userInfo) {
       // 없으면 'Invalid user'
-      res.status(404).send('invalid user');
+      res.status(404).send("invalid user");
     } else if (userInfo.password !== password) {
       // 비밀번호가 다르면 'Wrong password'
-      res.status(400).send('wrong password');
+      res.status(400).send("wrong password");
     } else {
       // access & refresh token을 만들어 준다.
       let data = { ...userInfo.dataValues };
       delete data.password;
 
-      const accessToken = await jwt.sign(data, process.env.ACCESS_SECRET, { expiresIn: '60m' });
-      const refreshToken = await jwt.sign(data, process.env.REFRESH_SECRET, { expiresIn: '10d' });
+      const accessToken = await jwt.sign(data, process.env.ACCESS_SECRET, {
+        expiresIn: "60m",
+      });
+      const refreshToken = await jwt.sign(data, process.env.REFRESH_SECRET, {
+        expiresIn: "10d",
+      });
 
       res
-        .cookie('refreshToken', refreshToken, {
-          domain: 'localhost', //! 수정하기
-          path: '/',
+        .cookie("refreshToken", refreshToken, {
+          domain: "localhost", //! 수정하기
+          path: "/",
           secure: false, //! 수정하기
           httpOnly: true,
-          sameSite: 'none',
+          sameSite: "none",
         })
         .status(200)
         .json({ accessToken: accessToken });
@@ -47,8 +51,13 @@ module.exports = {
       if (!userInfo) {
         res.status(400).send("you're currently not logined");
       } else {
-        const accessToken = await jwt.sign({}, process.env.ACCESS_SECRET, { expiresIn: '1' });
-        res.clearCookie('refreshToken').status(200).send('successfully signed out!');
+        const accessToken = await jwt.sign({}, process.env.ACCESS_SECRET, {
+          expiresIn: "1",
+        });
+        res
+          .clearCookie("refreshToken")
+          .status(200)
+          .send("successfully signed out!");
       }
     }
   },
@@ -57,12 +66,12 @@ module.exports = {
 
     if (!email || !password || !userName) {
       // 하나라도 없을 때
-      res.status(400).send('insufficient parameters supplied');
+      res.status(400).send("insufficient parameters supplied");
     }
 
     const userInfo = await User.findOne({ where: { email: email } });
     if (userInfo) {
-      res.status(409).send('email already in use');
+      res.status(409).send("email already in use");
     } else {
       const newUserInfo = await User.create({
         email,
@@ -77,25 +86,29 @@ module.exports = {
   },
   info: async (req, res) => {
     if (!req.headers.authorization) {
-      res.status(404).send('unauthorized user');
+      res.status(404).send("unauthorized user");
     } else {
       // access token 확인
       const token = req.headers.authorization;
 
       if (token) {
-        const token_body = token.split(' ')[1];
-        jwt.verify(token_body, process.env.ACCESS_SECRET, async (err, decoded) => {
-          if (err) {
-            res.status(404).send('invalid access token');
-          } else {
-            if (decoded.id === Number(req.params.id)) {
-              const userInfo = await User.findOne({ where: { id: req.params.id } });
+        const token_body = token.split(" ")[1];
+        jwt.verify(
+          token_body,
+          process.env.ACCESS_SECRET,
+          async (err, decoded) => {
+            if (err) {
+              res.status(404).send("invalid access token");
+            } else {
+              const userInfo = await User.findOne({
+                where: { id: decoded.id },
+              });
               res.status(200).json(userInfo);
             }
           }
-        });
+        );
       } else {
-        res.status(404).send('unauthorized user');
+        res.status(404).send("unauthorized user");
       }
     }
   },
@@ -105,11 +118,14 @@ module.exports = {
 
     if (!req.headers.authorization) {
       // 토큰 없을때
-      res.status(400).send('unauthorized user');
+      res.status(400).send("unauthorized user");
     } else {
       // 토큰 있을때
-      await User.update({ password, userName, score, bio }, { where: { email: email } });
-      res.status(200).send('successfully updated');
+      await User.update(
+        { password, userName, score, bio },
+        { where: { email: email } }
+      );
+      res.status(200).send("successfully updated");
     }
   },
   unregister: async (req, res) => {
@@ -123,13 +139,18 @@ module.exports = {
       if (!userInfo) {
         res.status(400).send("you're currently not logined");
       } else {
-        const accessToken = await jwt.sign({}, process.env.ACCESS_SECRET, { expiresIn: '1' });
+        const accessToken = await jwt.sign({}, process.env.ACCESS_SECRET, {
+          expiresIn: "1",
+        });
         await User.destroy({
           where: {
             email: userInfo.email,
           },
         });
-        res.clearCookie('refreshToken').status(200).send('successfully signed out!');
+        res
+          .clearCookie("refreshToken")
+          .status(200)
+          .send("successfully signed out!");
       }
     }
   },
