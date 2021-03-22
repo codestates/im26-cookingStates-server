@@ -1,66 +1,42 @@
-const clientID = process.env.GOOGLE_CLIENT_ID;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const axios = require("axios");
 
 module.exports = {
-  google: (req, res) => {
-    console.log("google-req-body: ", req.body);
+  kakao: (req, res) => {
+    const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
+    const KAKAO_CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET;
+    const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
+    const AUTHORIZATION_CODE = req.body.authorizationCode;
+    const KAKAO_TOKEN_URL = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${KAKAO_CLIENT_ID}&client_secret=${KAKAO_CLIENT_SECRET}&redirect_uri=${KAKAO_REDIRECT_URI}&code=${AUTHORIZATION_CODE}`;
 
     axios
-      .post("https://accounts.google.com/o/oauth2/token", {
-        client_id: clientID,
-        client_secret: clientSecret,
-        code: req.body.authorizationCode,
-        redirect_uri: "http://localhost:4000/oauth/google/callback",
-        grant_type: "authorization_code",
+      .post(
+        KAKAO_TOKEN_URL,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+            accept: "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        const { access_token, token_type, refresh_token } = response.data;
+        return res
+          .cookie("refreshToken", refresh_token, {
+            domain: "localhost", // !ec2에서 바꾸기
+            path: "/",
+            secure: false, // !ec2에서 바꾸기
+            httpOnly: true,
+            sameSite: "none",
+          })
+          .status(200)
+          .json({ access_token, token_type });
       })
-      .then((res) => console.log(res))
       .catch((e) => console.log(e));
-    // axios
-    //   .post(
-    //     "https://accounts.google.com/o/oauth2/auth",
-    //     {
-    //       client_id: clientID,
-    //       client_secret: clientSecret,
-    //       code: req.body.authorizationCode,
-    //       redirect_uri: "http://localhost:4000/oauth/google/callback",
-    //       // redirect_uri: "https://cookingstates.cf/oauth/google/callback",
-    //     },
-    //     {
-    //       withCredentials: true,
-    //       headers: {
-    //         accept: "application/json",
-    //       },
-    //     }
-    //   )
-    //   .then((response) => {
-    //     console.log("google-response-data", response.data);
-    //     res.status(200).json({ accessToken: response.data.access_token });
-    //   })
-    //   .catch((err) => console.log(err));
   },
-  google_callback: (req, res) => {
-    // 구글으로부터 POST 요청을 받는 곳
-    // req.body.access_token
-    console.log("callback-req-body: ", req);
 
-    // {
-    //   "access_token" : "ya29.AHES6ZTtm7SuokEB-RGtbBty9IIlNiP9-eNMMQKtXdMP3sfjL1Fc",
-    //   "token_type" : "Bearer",
-    //   "expires_in" : 3600,
-    //   "refresh_token" : "1/HKSmLFXzqP0leUihZp2xUt3-5wkU7Gmu2Os_eBnzw74"
-    // }
-
-    // 토큰확인
-    axios
-      .post("https://accounts.google.com/o/oauth2/token", {
-        client_id: clientID,
-        client_secret: clientSecret,
-        code: req.body.authorizationCode,
-        redirect_uri: "http://localhost:4000/oauth/google/callback",
-        grant_type: "authorization_code",
-      })
-      .then((res) => console.log(res))
-      .catch((e) => console.log(e));
+  kakao_callback: (req, res) => {
+    //console.log("~~~~~~~~~~~~~~~~~~~~`", req);
   },
 };

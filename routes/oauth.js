@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/oauth");
 
-router.post("/google", controller.google);
-
-router.get("/google/callback", controller.google_callback);
+router.post("/kakao", controller.kakao);
+router.get("/kakao/callback", controller.kakao_callback);
 
 module.exports = router;
