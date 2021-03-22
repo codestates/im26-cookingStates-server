@@ -16,4 +16,6 @@ router.post("/:id/unregister", controller.unregister);
 
 router.post("/checkemail", controller.checkemail);
 
+router.get("/all", controller.all);
+
 module.exports = router;
