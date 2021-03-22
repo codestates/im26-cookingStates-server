@@ -1,6 +1,6 @@
-const express = require('express');
-const { Course } = require('../models');
-const { RecipeModel } = require('../db/mongo');
+const express = require("express");
+const { Course } = require("../models");
+const { RecipeModel } = require("../db/mongo");
 
 module.exports = {
   info: async (req, res) => {
@@ -18,7 +18,7 @@ module.exports = {
     if (courseInfo) {
       res.status(200).json(result);
     } else {
-      res.status(404).send('request failed');
+      res.status(404).send("request failed");
     }
   },
   specificInfo: async (req, res) => {
@@ -32,10 +32,19 @@ module.exports = {
           difficulty,
           way,
           type,
-          image
+          image,
         };
       });
       res.status(200).json(result);
     });
+  },
+  addCourse: async (req, res) => {
+    const { courseName, courseDiscription } = req.body;
+    const result = await Course.create({
+      courseName: courseName,
+      description: courseDiscription,
+    });
+
+    res.status(200).send("코스 추가 완료");
   },
 };
