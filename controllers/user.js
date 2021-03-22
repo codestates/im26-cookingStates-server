@@ -1,6 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, User_Course_join, User_Recipe_join } = require("../models");
 
 module.exports = {
   login: async (req, res) => {
@@ -80,7 +80,46 @@ module.exports = {
         bio,
         score: 0,
         isPassed: false,
+        type: "U",
       });
+
+      const inputId = newUserInfo.dataValues.id;
+      console.log("userInfo : ", newUserInfo);
+      console.log("인풋아이디 : ", inputId);
+
+      await User_Course_join.bulkCreate([
+        {
+          userId: inputId,
+          courseId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 4,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ]);
+
       res.status(201).json(newUserInfo);
     }
   },
