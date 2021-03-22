@@ -14,4 +14,6 @@ router.post("/:id/update", controller.update);
 
 router.post("/:id/unregister", controller.unregister);
 
+router.post("/checkemail", controller.checkemail);
+
 module.exports = router;
