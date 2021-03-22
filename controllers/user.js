@@ -193,4 +193,12 @@ module.exports = {
       }
     }
   },
+  checkemail: async (req, res) => {
+    const userInfo = await User.findOne({ where: { email: req.body.email } });
+    if (userInfo) {
+      res.status(409).send("email already in use");
+    } else {
+      res.status(200).send("ok");
+    }
+  },
 };
