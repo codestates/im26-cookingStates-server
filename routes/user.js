@@ -16,6 +16,8 @@ router.post("/unregister", controller.unregister);
 
 router.post("/checkemail", controller.checkemail);
 
+router.post("/permission", controller.permission);
+
 router.get("/all", controller.all);
 
 module.exports = router;
