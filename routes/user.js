@@ -10,10 +10,12 @@ router.post("/register", controller.register);
 
 router.get("/info", controller.info);
 
-router.post("/:id/update", controller.update);
+router.post("/update", controller.update);
 
-router.post("/:id/unregister", controller.unregister);
+router.post("/unregister", controller.unregister);
 
 router.post("/checkemail", controller.checkemail);
+
+router.get("/all", controller.all);
 
 module.exports = router;

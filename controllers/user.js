@@ -1,6 +1,8 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, User_Course_join, User_Recipe_join } = require("../models");
+const dotenv = require("dotenv");
+dotenv.config();
 
 module.exports = {
   login: async (req, res) => {
@@ -80,7 +82,46 @@ module.exports = {
         bio,
         score: 0,
         isPassed: false,
+        type: "U",
       });
+
+      const inputId = newUserInfo.dataValues.id;
+      console.log("userInfo : ", newUserInfo);
+      console.log("인풋아이디 : ", inputId);
+
+      await User_Course_join.bulkCreate([
+        {
+          userId: inputId,
+          courseId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 4,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId: inputId,
+          courseId: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ]);
+
       res.status(201).json(newUserInfo);
     }
   },
@@ -160,6 +201,29 @@ module.exports = {
       res.status(409).send("email already in use");
     } else {
       res.status(200).send("ok");
+    }
+  },
+  all: async (req, res) => {
+    if (!req.headers.authorization) {
+      // 토큰 없을때
+      res.status(400).send("you're currently not logined");
+    } else {
+      const token = req.headers.authorization;
+      // 토큰 있을때
+      const token_body = token.split(" ")[1];
+      const userData = jwt.decode(token_body);
+      if (userData.type === "A") {
+        const userInfo = await User.findAll();
+        res.json({ userInfo });
+      }
+      // jwt.verify(token_body, process.env.ACCESS_SECRET, (err, decoded) => {
+      //   if (err) {
+      //     console.log(err);
+      //     res.status(404).send("invalid access token");
+      //   } else {
+      //     console.log(decoded);
+      //   }
+      // });
     }
   },
 };
