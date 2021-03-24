@@ -6,40 +6,44 @@ dotenv.config();
 
 module.exports = {
   login: async (req, res) => {
-    // post
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
+      // 일치하는 정보를 가진 유저가 있는지 확인
+      const userInfo = await User.findOne({ where: { email: email } });
 
-    // 일치하는 정보를 가진 유저가 있는지 확인
-    const userInfo = await User.findOne({ where: { email: email } });
+      //console.log("유저인포", userInfo);
 
-    if (!userInfo) {
-      // 없으면 'Invalid user'
-      res.status(404).send("invalid user");
-    } else if (userInfo.password !== password) {
-      // 비밀번호가 다르면 'Wrong password'
-      res.status(400).send("wrong password");
-    } else {
-      // access & refresh token을 만들어 준다.
-      let data = { ...userInfo.dataValues };
-      delete data.password;
+      if (!userInfo) {
+        // 없으면 'Invalid user'
+        res.status(404).send("invalid user");
+      } else if (userInfo.password !== password && userInfo.type !== "Sk") {
+        // (카카오 로그인이 아닌 경우) 비밀번호가 다르면 'Wrong password'
+        res.status(400).send("wrong password");
+      } else {
+        // access & refresh token을 만들어 준다.
+        let data = { ...userInfo.dataValues };
+        delete data.password;
 
-      const accessToken = await jwt.sign(data, process.env.ACCESS_SECRET, {
-        expiresIn: "60m",
-      });
-      const refreshToken = await jwt.sign(data, process.env.REFRESH_SECRET, {
-        expiresIn: "10d",
-      });
+        const accessToken = await jwt.sign(data, process.env.ACCESS_SECRET, {
+          expiresIn: "60m",
+        });
+        const refreshToken = await jwt.sign(data, process.env.REFRESH_SECRET, {
+          expiresIn: "10d",
+        });
 
-      res
-        .cookie("refreshToken", refreshToken, {
-          domain: "localhost", //! 수정하기
-          path: "/",
-          secure: false, //! 수정하기
-          httpOnly: true,
-          sameSite: "none",
-        })
-        .status(200)
-        .json({ accessToken: accessToken });
+        res
+          .cookie("refreshToken", refreshToken, {
+            domain: "localhost", //! 수정하기
+            path: "/",
+            secure: false, //! 수정하기
+            httpOnly: true,
+            sameSite: "none",
+          })
+          .status(200)
+          .json({ accessToken: accessToken });
+      }
+    } catch (err) {
+      console.log(err);
     }
   },
   logout: async (req, res) => {
@@ -64,65 +68,75 @@ module.exports = {
     }
   },
   register: async (req, res) => {
-    const { email, password, userName, bio } = req.body;
+    try {
+      const { email, password, userName, bio, socialType } = req.body;
+      let type = "U";
 
-    if (!email || !password || !userName) {
-      // 하나라도 없을 때
-      res.status(400).send("insufficient parameters supplied");
-    }
+      if (socialType === "kakao") {
+        type = "Sk";
+      }
 
-    const userInfo = await User.findOne({ where: { email: email } });
-    if (userInfo) {
-      res.status(409).send("email already in use");
-    } else {
-      const newUserInfo = await User.create({
-        email,
-        password,
-        userName,
-        bio,
-        score: 0,
-        isPassed: false,
-        type: "U",
-      });
+      if (!email || !password || !userName) {
+        // 하나라도 없을 때
+        res.status(400).send("insufficient parameters supplied");
+      }
 
-      const inputId = newUserInfo.dataValues.id;
-      console.log("userInfo : ", newUserInfo);
-      console.log("인풋아이디 : ", inputId);
+      const userInfo = await User.findOne({ where: { email: email } });
 
-      await User_Course_join.bulkCreate([
-        {
-          userId: inputId,
-          courseId: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          userId: inputId,
-          courseId: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          userId: inputId,
-          courseId: 3,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          userId: inputId,
-          courseId: 4,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          userId: inputId,
-          courseId: 5,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]);
+      if (userInfo) {
+        res.status(409).send("email already in use");
+      } else {
+        const newUserInfo = await User.create({
+          email,
+          password,
+          userName,
+          bio,
+          score: 0,
+          isPassed: false,
+          type,
+        });
 
-      res.status(201).json(newUserInfo);
+        const inputId = newUserInfo.dataValues.id;
+        //console.log("userInfo : ", newUserInfo);
+        // console.log("인풋아이디 : ", inputId);
+
+        await User_Course_join.bulkCreate([
+          {
+            userId: inputId,
+            courseId: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            userId: inputId,
+            courseId: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            userId: inputId,
+            courseId: 3,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            userId: inputId,
+            courseId: 4,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            userId: inputId,
+            courseId: 5,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]);
+        console.log("userInfo!!!! : ", newUserInfo);
+        res.status(201).json(newUserInfo);
+      }
+    } catch (err) {
+      console.log(err);
     }
   },
   info: async (req, res) => {
