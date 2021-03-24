@@ -240,4 +240,26 @@ module.exports = {
       // });
     }
   },
+  permission: async (req, res) => {
+    console.log(req.body);
+    // console.log(req.headers);
+    if (!req.headers.authorization) {
+      // 토큰 없을때
+      res.status(400).send("you're currently not logined");
+    } else {
+      const token = req.headers.authorization;
+      // 토큰 있을때
+      const token_body = token.split(" ")[1];
+      const userData = jwt.decode(token_body);
+      if (userData.type === "A") {
+        await User.update(
+          { type: req.body.type },
+          { where: { email: req.body.email } }
+        );
+        res.status(200).send("권한 부여 완료");
+      } else {
+        res.status(401);
+      }
+    }
+  },
 };
