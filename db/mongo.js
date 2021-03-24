@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const Schema = mongoose.Schema;
 dotenv.config();
 
 const URL = `mongodb+srv://${process.env.DATABASE_MONGODB_USER}:${process.env.DATABASE_MONGODB_PASSWORD}@cookingstates.s8upz.mongodb.net/cookingstates?retryWrites=true&w=majority`;
-const databaseName = 'recipes';
+const databaseName = "recipes";
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -17,7 +17,7 @@ mongoose
     // console.log("ok!");
   })
   .catch((e) => {
-    console.log('error!!! ', e);
+    console.log("error!!! ", e);
   });
 
 const ProductSchema = new Schema({
@@ -42,9 +42,22 @@ const ProductSchema = new Schema({
   manual: [[String, String]],
 });
 
-RecipeModel = mongoose.model('RecipeModel', ProductSchema);
+const CustomProductSchema = new Schema({
+  id: String,
+  title: String,
+  difficulty: Number,
+  type: String,
+  image: String,
+  manual: String,
+  email: String,
+  author: String,
+});
+
+RecipeModel = mongoose.model("RecipeModel", ProductSchema);
+CustomRecipeModel = mongoose.model("CustomRecipeModel", CustomProductSchema);
 
 module.exports = {
   mongoose,
   RecipeModel,
+  CustomRecipeModel,
 };
