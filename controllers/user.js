@@ -341,7 +341,7 @@ module.exports = {
               let userInfoResult = { ...userInfo.dataValues };
               delete userInfoResult.password;
 
-              const recentCourse = await User_Course_join.findAll({
+              let recentCourse = await User_Course_join.findAll({
                 where: { userId: userInfo.id },
               })
                 .then((res) =>
@@ -360,6 +360,26 @@ module.exports = {
                   where: { userId: userInfo.id },
                 }
               ).then((res) => {
+                // console.log("res[0].dataValues.recipeId", res[0].dataValues.recipeId);
+                // console.log("recentCourse", recentCourse);
+                const temp = [1, 2, 3, 4, 5];
+                const group = temp.map((el) => el + (recentCourse * 5 - 5)); //! 위험한 알고리즘...
+
+                let result = [];
+                res.map((el) => {
+                  if (
+                    el.dataValues.checked &&
+                    group.includes(el.dataValues.recipeId)
+                  )
+                    result.push(el.dataValues.recipeId);
+                });
+                return result;
+              });
+              //console.log(passedRecipesOfRecentCourse);
+
+              const passedRecipes = await User_Recipe_join.findAll({
+                where: { userId: userInfo.id },
+              }).then((res) => {
                 //console.log("res[0].dataValues", res[0].dataValues);
                 let result = [];
                 res.map((el) => {
@@ -381,7 +401,7 @@ module.exports = {
                   if (el.dataValues.endDate) {
                     result.push({
                       courseId: el.dataValues.courseId,
-                      endDate: String(el.dataValues.endDate).slice(0, 10),
+                      endDate: String(el.dataValues.endDate).slice(0, 15),
                     });
                   }
                 });
@@ -393,9 +413,10 @@ module.exports = {
               userInfoResult.course = {
                 recentCourse, // Number // updatedAt이 가장 최신인 것의 courseId
                 passedRecipesOfRecentCourse, // [1, 2, 3..]
+                passedRecipes,
                 passedCourses, // [{courseId, endDate}, {}, {} ..] endDate의 값이 true인지 아닌지
               };
-              console.log(userInfoResult);
+              // console.log(userInfoResult);
               res.status(200).json(userInfoResult);
             }
           }
