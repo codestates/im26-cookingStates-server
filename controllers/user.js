@@ -132,6 +132,185 @@ module.exports = {
             updatedAt: new Date(),
           },
         ]);
+
+        await User_Recipe_join.bulkCreate([
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 3,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 4,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 5,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 6,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 7,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 8,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 9,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 10,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 11,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 12,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 13,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 14,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 15,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 16,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 17,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 18,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 19,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 20,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 21,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 22,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 23,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 24,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            checked: false,
+            userId: inputId,
+            recipeId: 25,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]);
+
         console.log("userInfo!!!! : ", newUserInfo);
         res.status(201).json(newUserInfo);
       }
@@ -158,7 +337,66 @@ module.exports = {
               const userInfo = await User.findOne({
                 where: { id: decoded.id },
               });
-              res.status(200).json(userInfo);
+
+              let userInfoResult = { ...userInfo.dataValues };
+              delete userInfoResult.password;
+
+              const recentCourse = await User_Course_join.findAll({
+                where: { userId: userInfo.id },
+              })
+                .then((res) =>
+                  res.reduce(
+                    (acc, cur) =>
+                      acc.updatedAt > cur.dataValues.updatedAt
+                        ? acc
+                        : cur.dataValues,
+                    res[0].dataValues
+                  )
+                )
+                .then((latest) => latest.courseId);
+
+              const passedRecipesOfRecentCourse = await User_Recipe_join.findAll(
+                {
+                  where: { userId: userInfo.id },
+                }
+              ).then((res) => {
+                //console.log("res[0].dataValues", res[0].dataValues);
+                let result = [];
+                res.map((el) => {
+                  //console.log("el.dataValues.checked", el.dataValues.checked);
+                  if (el.dataValues.checked) {
+                    result.push(el.dataValues.recipeId);
+                  }
+                  //console.log(result);
+                });
+                return result;
+              });
+
+              const passedCourses = await User_Course_join.findAll({
+                where: { userId: userInfo.id },
+              }).then((res) => {
+                let result = [];
+                res.map((el) => {
+                  //console.log("el.dataValues.endDate", el.dataValues.endDate);
+                  if (el.dataValues.endDate) {
+                    result.push({
+                      courseId: el.dataValues.courseId,
+                      endDate: String(el.dataValues.endDate).slice(0, 10),
+                    });
+                  }
+                });
+                return result;
+              });
+
+              //console.log("passedCourses", passedCourses);
+
+              userInfoResult.course = {
+                recentCourse, // Number // updatedAt이 가장 최신인 것의 courseId
+                passedRecipesOfRecentCourse, // [1, 2, 3..]
+                passedCourses, // [{courseId, endDate}, {}, {} ..] endDate의 값이 true인지 아닌지
+              };
+              console.log(userInfoResult);
+              res.status(200).json(userInfoResult);
             }
           }
         );
@@ -205,7 +443,7 @@ module.exports = {
         res
           .clearCookie("refreshToken")
           .status(200)
-          .send("successfully signed out!");
+          .send("successfully unregistered!");
       }
     }
   },
