@@ -341,7 +341,7 @@ module.exports = {
               let userInfoResult = { ...userInfo.dataValues };
               delete userInfoResult.password;
 
-              let recentCourse = await User_Course_join.findAll({
+              const recentCourse = await User_Course_join.findAll({
                 where: { userId: userInfo.id },
               })
                 .then((res) =>
