@@ -36,10 +36,12 @@ module.exports = {
 
       if (token) {
         const token_body = token.split(" ")[1];
+        const isChecked = req.body.isChecked;
+
         const userData = await jwt.decode(token_body);
         await User_Recipe_join.update(
           {
-            checked: true,
+            checked: isChecked,
           },
           {
             where: {
