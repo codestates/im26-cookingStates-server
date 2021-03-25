@@ -26,7 +26,7 @@ module.exports = {
       }
     });
   },
-  checkedRecipe: (req, res) => {
+  checkedRecipe: async (req, res) => {
     const recipeId = req.params.id;
     if (!req.headers.authorization) {
       res.status(404).send("unauthorized user");
@@ -37,28 +37,42 @@ module.exports = {
       if (token) {
         const token_body = token.split(" ")[1];
         const isChecked = req.body.isChecked;
-        jwt.verify(
-          token_body,
-          process.env.ACCESS_SECRET,
-          async (err, decoded) => {
-            if (err) {
-              res.status(404).send("invalid access token");
-            } else {
-              await User_Recipe_join.update(
-                {
-                  checked: isChecked,
-                },
-                {
-                  where: {
-                    userId: decoded.id,
-                    recipeId: recipeId,
-                  },
-                }
-              );
-              res.status(200).send("applied");
-            }
+
+        const userData = await jwt.decode(token_body);
+        await User_Recipe_join.update(
+          {
+            checked: isChecked,
+          },
+          {
+            where: {
+              userId: userData.id,
+              recipeId: recipeId,
+            },
           }
         );
+        res.status(200).send("변경 완료");
+        // jwt.verify(
+        //   token_body,
+        //   process.env.ACCESS_SECRET,
+        //   async (err, decoded) => {
+        //     if (err) {
+        //       res.status(404).send("invalid access token");
+        //     } else {
+        //       await User_Recipe_join.update(
+        //         {
+        //           checked: true,
+        //         },
+        //         {
+        //           where: {
+        //             userId: decoded.id,
+        //             recipeId: recipeId,
+        //           },
+        //         }
+        //       );
+        //       res.status(200).send("checked reciped");
+        //     }
+        //   }
+        // );
       } else {
         res.status(404).send("unauthorized user");
       }
@@ -122,5 +136,10 @@ module.exports = {
         res.status(200).json(result);
       }
     });
+  },
+
+  delete: (req, res) => {
+    console.log(req.body);
+    res.status(200).send("완료");
   },
 };
