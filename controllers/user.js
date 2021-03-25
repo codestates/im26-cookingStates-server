@@ -360,7 +360,7 @@ module.exports = {
               let userInfoResult = { ...userInfo.dataValues };
               delete userInfoResult.password;
 
-              const recentCourse = await User_Course_join.findAll({
+              const recentCourse = await User_Recipe_join.findAll({
                 where: { userId: userInfo.id },
               })
                 .then((res) =>
@@ -372,7 +372,7 @@ module.exports = {
                     res[0].dataValues
                   )
                 )
-                .then((latest) => latest.courseId);
+                .then((latest) => Math.ceil(latest.recipeId / 5));
 
               const passedRecipesOfRecentCourse = await User_Recipe_join.findAll(
                 {

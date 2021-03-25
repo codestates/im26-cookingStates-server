@@ -8,4 +8,6 @@ router.get("/:id", controller.specificInfo);
 
 router.post("/", controller.addCourse);
 
+router.post("/complete", controller.complete);
+
 module.exports = router;

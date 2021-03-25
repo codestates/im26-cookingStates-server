@@ -1,5 +1,5 @@
 const express = require("express");
-const { Course } = require("../models");
+const { Course, User, User_Course_join } = require("../models");
 const { RecipeModel } = require("../db/mongo");
 
 module.exports = {
@@ -46,5 +46,29 @@ module.exports = {
     });
 
     res.status(200).send("코스 추가 완료");
+  },
+
+  complete: async (req, res) => {
+    try {
+      const { email, courseId, isPassed } = req.body;
+      const userInfo = await User.findOne({ where: { email: email } });
+
+      await User.update({ isPassed: isPassed }, { where: { email: email } });
+
+      if (isPassed) {
+        await User_Course_join.update(
+          { endDate: new Date() },
+          { where: { userId: userInfo.id, courseId: courseId } }
+        );
+      } else {
+        await User_Course_join.update(
+          { endDate: null },
+          { where: { userId: userInfo.id, courseId: courseId } }
+        );
+      }
+      res.status(200).json("successfully updated!");
+    } catch (err) {
+      console.log(err);
+    }
   },
 };

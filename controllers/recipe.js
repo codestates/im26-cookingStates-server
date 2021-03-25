@@ -45,7 +45,7 @@ module.exports = {
             } else {
               await User_Recipe_join.update(
                 {
-                  checked: true,
+                  checked: req.body.isChecked,
                 },
                 {
                   where: {
@@ -54,7 +54,7 @@ module.exports = {
                   },
                 }
               );
-              res.status(200).send("checked reciped");
+              res.status(200).send("applied");
             }
           }
         );
