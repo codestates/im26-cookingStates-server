@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const { User, User_Course_join, User_Recipe_join } = require("../models");
 const dotenv = require("dotenv");
 dotenv.config();
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 module.exports = {
   login: async (req, res) => {
@@ -11,37 +13,48 @@ module.exports = {
       // 일치하는 정보를 가진 유저가 있는지 확인
       const userInfo = await User.findOne({ where: { email: email } });
 
-      //console.log("유저인포", userInfo);
+      console.log(password, userInfo.password);
 
-      if (!userInfo) {
-        // 없으면 'Invalid user'
-        res.status(404).send("invalid user");
-      } else if (userInfo.password !== password && userInfo.type !== "Sk") {
-        // (카카오 로그인이 아닌 경우) 비밀번호가 다르면 'Wrong password'
-        res.status(400).send("wrong password");
-      } else {
-        // access & refresh token을 만들어 준다.
-        let data = { ...userInfo.dataValues };
-        delete data.password;
+      bcrypt.compare(password, userInfo.password, async (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          if (result) {
+            // 일치할 때
+            let data = { ...userInfo.dataValues };
+            delete data.password;
 
-        const accessToken = await jwt.sign(data, process.env.ACCESS_SECRET, {
-          expiresIn: "60m",
-        });
-        const refreshToken = await jwt.sign(data, process.env.REFRESH_SECRET, {
-          expiresIn: "10d",
-        });
+            const accessToken = await jwt.sign(
+              data,
+              process.env.ACCESS_SECRET,
+              {
+                expiresIn: "60m",
+              }
+            );
+            const refreshToken = await jwt.sign(
+              data,
+              process.env.REFRESH_SECRET,
+              {
+                expiresIn: "10d",
+              }
+            );
 
-        res
-          .cookie("refreshToken", refreshToken, {
-            domain: "localhost", //! 수정하기
-            path: "/",
-            secure: false, //! 수정하기
-            httpOnly: true,
-            sameSite: "none",
-          })
-          .status(200)
-          .json({ accessToken: accessToken });
-      }
+            res
+              .cookie("refreshToken", refreshToken, {
+                domain: "localhost", //! 수정하기
+                path: "/",
+                secure: false, //! 수정하기
+                httpOnly: true,
+                sameSite: "none",
+              })
+              .status(200)
+              .json({ accessToken: accessToken });
+          } else {
+            // 일치하지 않을때
+            res.status(400).send("wrong password");
+          }
+        }
+      });
     } catch (err) {
       console.log(err);
     }
@@ -86,233 +99,239 @@ module.exports = {
       if (userInfo) {
         res.status(409).send("email already in use");
       } else {
-        const newUserInfo = await User.create({
-          email,
-          password,
-          userName,
-          bio,
-          score: 0,
-          isPassed: false,
-          type,
+        bcrypt.hash(password, saltRounds, async function (err, hash) {
+          if (err) {
+            console.log(err);
+          } else {
+            // 암호화된 비밀번호 만드는데 성공했을 때
+            const newUserInfo = await User.create({
+              email,
+              password: hash,
+              userName,
+              bio,
+              score: 0,
+              isPassed: false,
+              type,
+            });
+
+            const inputId = newUserInfo.dataValues.id;
+            //console.log("userInfo : ", newUserInfo);
+            // console.log("인풋아이디 : ", inputId);
+
+            await User_Course_join.bulkCreate([
+              {
+                userId: inputId,
+                courseId: 1,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                userId: inputId,
+                courseId: 2,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                userId: inputId,
+                courseId: 3,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                userId: inputId,
+                courseId: 4,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                userId: inputId,
+                courseId: 5,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ]);
+
+            await User_Recipe_join.bulkCreate([
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 1,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 2,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 3,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 4,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 5,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 6,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 7,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 8,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 9,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 10,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 11,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 12,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 13,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 14,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 15,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 16,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 17,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 18,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 19,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 20,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 21,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 22,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 23,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 24,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                checked: false,
+                userId: inputId,
+                recipeId: 25,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ]);
+            //console.log("userInfo!!!! : ", newUserInfo);
+            res.status(201).json(newUserInfo);
+          }
         });
-
-        const inputId = newUserInfo.dataValues.id;
-        //console.log("userInfo : ", newUserInfo);
-        // console.log("인풋아이디 : ", inputId);
-
-        await User_Course_join.bulkCreate([
-          {
-            userId: inputId,
-            courseId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            userId: inputId,
-            courseId: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            userId: inputId,
-            courseId: 3,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            userId: inputId,
-            courseId: 4,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            userId: inputId,
-            courseId: 5,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ]);
-
-        await User_Recipe_join.bulkCreate([
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 3,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 4,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 5,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 6,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 7,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 8,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 9,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 10,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 11,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 12,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 13,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 14,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 15,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 16,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 17,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 18,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 19,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 20,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 21,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 22,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 23,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 24,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            checked: false,
-            userId: inputId,
-            recipeId: 25,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ]);
-
-        console.log("userInfo!!!! : ", newUserInfo);
-        res.status(201).json(newUserInfo);
       }
     } catch (err) {
       console.log(err);
@@ -435,13 +454,25 @@ module.exports = {
       res.status(400).send("unauthorized user");
     } else {
       // 토큰 있을때
-      await User.update(
-        { password, userName, score, bio },
-        { where: { email: email } }
-      );
-      res.status(200).send("successfully updated");
+      const userInfo = await User.findOne({ where: { email: email } });
+
+      bcrypt.compare(password, userInfo.password, async (err, result) => {
+        if (err) {
+          res.status(400).send("wrong password");
+        } else {
+          if (result) {
+            // 일치할 때
+            await User.update(
+              { password, userName, score, bio },
+              { where: { email: email } }
+            );
+            res.status(200).send("successfully updated");
+          }
+        }
+      });
     }
   },
+
   unregister: async (req, res) => {
     // req.body.email
     if (!req.headers.authorization) {
