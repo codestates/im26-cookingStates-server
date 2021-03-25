@@ -36,6 +36,7 @@ module.exports = {
 
       if (token) {
         const token_body = token.split(" ")[1];
+        const isChecked = req.body.isChecked;
         jwt.verify(
           token_body,
           process.env.ACCESS_SECRET,
@@ -45,7 +46,7 @@ module.exports = {
             } else {
               await User_Recipe_join.update(
                 {
-                  checked: req.body.isChecked,
+                  checked: isChecked,
                 },
                 {
                   where: {
