@@ -446,7 +446,6 @@ module.exports = {
     }
   },
   update: async (req, res) => {
-    // post
     const { email, password, userName, score, bio } = req.body;
 
     if (!req.headers.authorization) {
@@ -454,20 +453,16 @@ module.exports = {
       res.status(400).send("unauthorized user");
     } else {
       // 토큰 있을때
-      const userInfo = await User.findOne({ where: { email: email } });
-
-      bcrypt.compare(password, userInfo.password, async (err, result) => {
+      bcrypt.hash(password, saltRounds, async function (err, hash) {
         if (err) {
-          res.status(400).send("wrong password");
+          console.log(err);
         } else {
-          if (result) {
-            // 일치할 때
-            await User.update(
-              { password, userName, score, bio },
-              { where: { email: email } }
-            );
-            res.status(200).send("successfully updated");
-          }
+          // 암호화된 비밀번호 만드는데 성공했을 때
+          await User.update(
+            { password: hash, userName, score, bio },
+            { where: { email: email } }
+          );
+          res.status(200).send("successfully updated");
         }
       });
     }
