@@ -35,15 +35,15 @@ app.use("/token", tokenRouter);
 app.use("/oauth", oauthRouter);
 
 if (
-  fs.existsSync("/etc/letsencrypt/live/cookingstates.cf/") &&
-  fs.existsSync("/etc/letsencrypt/live/cookingstates.cf/")
+  fs.existsSync("/etc/letsencrypt/live/cookingstates.site/") &&
+  fs.existsSync("/etc/letsencrypt/live/cookingstates.site/")
 ) {
   const privateKey = fs.readFileSync(
-    "/etc/letsencrypt/live/cookingstates.cf/privkey.pem",
+    "/etc/letsencrypt/live/cookingstates.site/privkey.pem",
     "utf8"
   );
   const certificate = fs.readFileSync(
-    "/etc/letsencrypt/live/cookingstates.cf/cert.pem",
+    "/etc/letsencrypt/live/cookingstates.site/cert.pem",
     "utf8"
   );
 
